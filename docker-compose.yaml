@@ -1,0 +1,25 @@
+version: "3.8"
+services:
+  redis:
+    image: redis
+    ports:
+      - "6379:6379"
+  db:
+    image: mysql:8
+    hostname: db
+    environment:
+      - MYSQL_ROOT_PASSWORD=mydbpwd
+      - MYSQL_DATABASE=newdb
+    volumes:
+      - ./db_data_dumps:/docker-entrypoint-initdb.d/
+    ports:
+      - "3306:3306"
+  flask:
+    build: ./code/
+    ports: 
+      - "5000:5000"
+    volumes: 
+      - ./code:/code
+    depends_on:
+      - db
+      - redis
